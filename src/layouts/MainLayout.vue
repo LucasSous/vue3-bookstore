@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-layout>
-      <v-navigation-drawer>
+      <v-navigation-drawer style="height: 100vh; position: fixed">
         <v-container class="d-flex justify-center pa-6">
           <v-icon icon="mdi-bookshelf" size="60"> </v-icon>
         </v-container>

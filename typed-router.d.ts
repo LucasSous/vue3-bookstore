@@ -39,11 +39,11 @@ import type {
 
 declare module 'vue-router/auto/routes' {
   export interface RouteNamedMap {
-    '/BooksPage': RouteRecordInfo<'/BooksPage', '/BooksPage', Record<never, never>, Record<never, never>>,
-    '/DashboardPage': RouteRecordInfo<'/DashboardPage', '/DashboardPage', Record<never, never>, Record<never, never>>,
-    '/PublishersPage': RouteRecordInfo<'/PublishersPage', '/PublishersPage', Record<never, never>, Record<never, never>>,
-    '/RentsPage': RouteRecordInfo<'/RentsPage', '/RentsPage', Record<never, never>, Record<never, never>>,
-    '/UsersPage': RouteRecordInfo<'/UsersPage', '/UsersPage', Record<never, never>, Record<never, never>>,
+    '/Books/BooksPage': RouteRecordInfo<'/Books/BooksPage', '/Books/BooksPage', Record<never, never>, Record<never, never>>,
+    '/Dashboard/DashboardPage': RouteRecordInfo<'/Dashboard/DashboardPage', '/Dashboard/DashboardPage', Record<never, never>, Record<never, never>>,
+    '/Publishers/PublishersPage': RouteRecordInfo<'/Publishers/PublishersPage', '/Publishers/PublishersPage', Record<never, never>, Record<never, never>>,
+    '/Rents/RentsPage': RouteRecordInfo<'/Rents/RentsPage', '/Rents/RentsPage', Record<never, never>, Record<never, never>>,
+    '/Users/UsersPage': RouteRecordInfo<'/Users/UsersPage', '/Users/UsersPage', Record<never, never>, Record<never, never>>,
   }
 }
 

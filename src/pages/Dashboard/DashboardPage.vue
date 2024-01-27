@@ -1,7 +1,5 @@
 <template>
-  <v-container>
-    <TitleComponent title="Dashboard" />
-  </v-container>
+  <TitleComponent title="Dashboard" />
 </template>
 
 <script lang="ts" setup>
