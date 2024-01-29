@@ -8,113 +8,102 @@
           label="Pesquisar"
           prepend-icon="mdi-magnify"
         />
-        <ButtonComponent title="Adiconar Usuário" prepend-icon="mdi-plus" />
+        <ButtonComponent
+          title="Adicionar Usuário"
+          prepend-icon="mdi-plus"
+          @click="openDialog"
+        />
       </v-container>
     </v-col>
   </v-row>
-  <v-data-table
+  <UsersList
     :headers="headers"
-    :items="desserts"
+    :users="usersList"
     :search="search"
-    :fixed-header="true"
-    height="60vh"
-    items-per-page-text="Items por página"
-    items-per-page="10"
-  >
-    <template v-slot:item.actions="{ item }">
-      <v-icon class="me-2"> mdi-pencil </v-icon>
-      <v-icon> mdi-delete </v-icon>
-    </template>
-  </v-data-table>
+    :loading="isLoading"
+  />
+  <v-dialog v-model="isOpenDialog" width="600px">
+    <v-card color="grey-lighten-4" class="pa-4">
+      <v-row class="pb-4 pl-2">
+        <v-col>
+          <div class="text-h5">Novo Usuário</div>
+        </v-col>
+        <v-col cols="1">
+          <v-icon icon="mdi-close" size="20" @click="closeDialog"> </v-icon>
+        </v-col>
+      </v-row>
+      <TextFieldComponent
+        label="Nome"
+        placeholder="Nome do usuário"
+        prepend-icon="mdi-account-outline"
+      />
+      <TextFieldComponent
+        label="E-mail"
+        placeholder="Ex:. usuario@gmail.com"
+        prepend-icon="mdi-email-outline"
+      />
+      <TextFieldComponent
+        label="Endereço"
+        placeholder="Endereço do usuário"
+        prepend-icon="mdi-map-marker-outline"
+      />
+      <TextFieldComponent
+        label="Cidade"
+        placeholder="Cidade do usuário"
+        prepend-icon="mdi-map-marker-outline"
+      />
+      <div class="d-flex py-4 px-2 justify-end aling-left">
+        <ButtonComponent title="Salvar" @click="closeDialog" />
+      </div>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts" setup>
 import ButtonComponent from '@/components/ButtonComponent.vue';
 import TitleComponent from '@/components/TitleComponent.vue';
 import TextFieldComponent from '@/components/TextFieldComponent.vue';
-import { ref } from 'vue';
+import UsersList from './components/UsersList.vue';
+import { UsersService } from '@/services/users';
+import { User } from '@/interfaces/user.interface';
+import { ref, onMounted } from 'vue';
+import router from '@/router';
 
 const search = ref<string>('');
+const isLoading = ref<boolean>(false);
 
 const headers = [
-  {
-    title: 'Id',
-    key: 'id',
-  },
-  { title: 'Nome', key: 'name' },
+  { title: 'Id', key: 'id' },
+  { title: 'Nome', key: 'nome' },
   { title: 'E-mail', key: 'email' },
-  { title: 'Endereço', key: 'address' },
-  { title: 'Actions', key: 'actions', sortable: false },
+  { title: 'Endereço', key: 'endereco' },
+  { title: 'Cidade', key: 'cidade' },
+  { title: 'Ações', key: 'actions', sortable: false },
 ];
 
-const desserts = [
-  {
-    id: '1',
-    name: 'Lucas Sousa',
-    email: 'lucas@gmail.com',
-    address: 'treze de agosto 47, fortaleza CE',
-  },
-  {
-    id: '2',
-    name: 'João Marcos',
-    email: 'lucas@gmail.com',
-    address: 'treze de agosto 47, fortaleza CE',
-  },
-  {
-    id: '3',
-    name: 'Maria Carla',
-    email: 'lucas@gmail.com',
-    address: 'treze de agosto 47, fortaleza CE',
-  },
-  {
-    id: '3',
-    name: 'Maria Carla',
-    email: 'lucas@gmail.com',
-    address: 'treze de agosto 47, fortaleza CE',
-  },
-  {
-    id: '3',
-    name: 'Maria Carla',
-    email: 'lucas@gmail.com',
-    address: 'treze de agosto 47, fortaleza CE',
-  },
-  {
-    id: '3',
-    name: 'Maria Carla',
-    email: 'lucas@gmail.com',
-    address: 'treze de agosto 47, fortaleza CE',
-  },
-  {
-    id: '3',
-    name: 'Maria Carla',
-    email: 'lucas@gmail.com',
-    address: 'treze de agosto 47, fortaleza CE',
-  },
-  {
-    id: '3',
-    name: 'Maria Carla',
-    email: 'lucas@gmail.com',
-    address: 'treze de agosto 47, fortaleza CE',
-  },
-  {
-    id: '3',
-    name: 'Maria Carla',
-    email: 'lucas@gmail.com',
-    address: 'treze de agosto 47, fortaleza CE',
-  },
-  {
-    id: '3',
-    name: 'Maria Carla',
-    email: 'lucas@gmail.com',
-    address: 'treze de agosto 47, fortaleza CE',
-  },
-  {
-    id: '3',
-    name: 'Maria Carla',
-    email: 'lucas@gmail.com',
-    address: 'treze de agosto 47, fortaleza CE',
-  },
-];
+const usersList = ref<User[]>([]);
 
-//
+const isOpenDialog = ref<boolean>(false);
+
+const getUsers = async (): Promise<void> => {
+  try {
+    isLoading.value = true;
+    const response = await UsersService.get();
+    usersList.value = response;
+  } catch (err: any | Error) {
+    router.push({ name: 'not-found' });
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const openDialog = (): void => {
+  isOpenDialog.value = true;
+};
+
+const closeDialog = (): void => {
+  isOpenDialog.value = false;
+};
+
+onMounted(getUsers);
 </script>

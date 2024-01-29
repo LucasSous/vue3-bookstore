@@ -51,6 +51,11 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    path: '/not-found',
+    name: 'not-found',
+    component: () => import('../pages/NotFound/NotFoundPage.vue'),
+  },
 ];
 
 export default routes;
