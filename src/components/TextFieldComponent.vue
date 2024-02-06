@@ -9,9 +9,9 @@
     v-bind:="$attrs"
     single-line
     variant="solo"
-    hide-details
+    :hide-details="props.hideDetails"
     density="compact"
-    class="pa-2"
+    class="px-2"
   ></v-text-field>
 </template>
 
@@ -31,6 +31,10 @@ const props = defineProps({
   modelValue: {
     type: String,
     default: '',
+  },
+  hideDetails: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>

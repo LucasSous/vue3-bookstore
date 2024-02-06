@@ -44,6 +44,7 @@ declare module 'vue-router/auto/routes' {
     '/NotFound/NotFoundPage': RouteRecordInfo<'/NotFound/NotFoundPage', '/NotFound/NotFoundPage', Record<never, never>, Record<never, never>>,
     '/Publishers/PublishersPage': RouteRecordInfo<'/Publishers/PublishersPage', '/Publishers/PublishersPage', Record<never, never>, Record<never, never>>,
     '/Rents/RentsPage': RouteRecordInfo<'/Rents/RentsPage', '/Rents/RentsPage', Record<never, never>, Record<never, never>>,
+    '/Users/components/UsersFormDialog': RouteRecordInfo<'/Users/components/UsersFormDialog', '/Users/components/UsersFormDialog', Record<never, never>, Record<never, never>>,
     '/Users/components/UsersList': RouteRecordInfo<'/Users/components/UsersList', '/Users/components/UsersList', Record<never, never>, Record<never, never>>,
     '/Users/UsersPage': RouteRecordInfo<'/Users/UsersPage', '/Users/UsersPage', Record<never, never>, Record<never, never>>,
   }

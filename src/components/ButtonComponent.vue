@@ -4,6 +4,7 @@
     :disabled="props.disabled"
     :prepend-icon="props.prependIcon"
     :color="props.color"
+    :type="props.type"
   >
     {{ props.title }}
   </v-btn>
@@ -15,6 +16,7 @@ const props = defineProps({
   prependIcon: String,
   loading: Boolean,
   disabled: Boolean,
+  type: String,
   color: {
     type: String,
     default: 'primary',

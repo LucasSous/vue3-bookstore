@@ -7,6 +7,7 @@
           v-model="search"
           label="Pesquisar"
           prepend-icon="mdi-magnify"
+          :hide-details="true"
         />
         <ButtonComponent
           title="Adicionar Usuário"
@@ -22,41 +23,7 @@
     :search="search"
     :loading="isLoading"
   />
-  <v-dialog v-model="isOpenDialog" width="600px">
-    <v-card color="grey-lighten-4" class="pa-4">
-      <v-row class="pb-4 pl-2">
-        <v-col>
-          <div class="text-h5">Novo Usuário</div>
-        </v-col>
-        <v-col cols="1">
-          <v-icon icon="mdi-close" size="20" @click="closeDialog"> </v-icon>
-        </v-col>
-      </v-row>
-      <TextFieldComponent
-        label="Nome"
-        placeholder="Nome do usuário"
-        prepend-icon="mdi-account-outline"
-      />
-      <TextFieldComponent
-        label="E-mail"
-        placeholder="Ex:. usuario@gmail.com"
-        prepend-icon="mdi-email-outline"
-      />
-      <TextFieldComponent
-        label="Endereço"
-        placeholder="Endereço do usuário"
-        prepend-icon="mdi-map-marker-outline"
-      />
-      <TextFieldComponent
-        label="Cidade"
-        placeholder="Cidade do usuário"
-        prepend-icon="mdi-map-marker-outline"
-      />
-      <div class="d-flex py-4 px-2 justify-end aling-left">
-        <ButtonComponent title="Salvar" @click="closeDialog" />
-      </div>
-    </v-card>
-  </v-dialog>
+  <UsersFormDialog :is-open-dialog="isOpenDialog" @close="closeDialog" />
 </template>
 
 <script lang="ts" setup>
@@ -68,6 +35,7 @@ import { UsersService } from '@/services/users';
 import { User } from '@/interfaces/user.interface';
 import { ref, onMounted } from 'vue';
 import router from '@/router';
+import UsersFormDialog from './components/UsersFormDialog.vue';
 
 const search = ref<string>('');
 const isLoading = ref<boolean>(false);
