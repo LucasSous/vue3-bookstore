@@ -10,6 +10,7 @@ declare module 'vue' {
     ButtonComponent: typeof import('./src/components/ButtonComponent.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TextField: typeof import('./src/components/TextField.vue')['default']
     TextFieldComponent: typeof import('./src/components/TextFieldComponent.vue')['default']
     TitleComponent: typeof import('./src/components/TitleComponent.vue')['default']
   }

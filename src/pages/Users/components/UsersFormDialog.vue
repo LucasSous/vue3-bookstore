@@ -9,44 +9,62 @@
           <v-icon icon="mdi-close" size="20" @click="closeDialog"> </v-icon>
         </v-col>
       </v-row>
+      <div v-if="isLoading" class="d-flex justify-center pa-5">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+      </div>
       <v-form
-        v-if="!isLoading"
+        v-else
         v-model="isFormValid"
         fast-fail
         @submit.prevent="formSubmit"
       >
-        <TextFieldComponent
-          v-model="user.nome"
+        <v-text-field
           label="Nome"
           placeholder="Nome do usuário"
-          prepend-icon="mdi-account-outline"
+          prepend-inner-icon="mdi-account-outline"
+          v-model="user.nome"
           :rules="nameRules"
-          :hide-details="false"
-        />
-        <TextFieldComponent
-          v-model="user.email"
+          single-line
+          variant="solo"
+          density="compact"
+          class="px-2"
+        ></v-text-field>
+        <v-text-field
           label="E-mail"
           placeholder="Ex:. usuario@gmail.com"
-          prepend-icon="mdi-email-outline"
+          prepend-inner-icon="mdi-email-outline"
+          v-model="user.email"
           :rules="emailRules"
-          :hide-details="false"
-        />
-        <TextFieldComponent
-          v-model="user.endereco"
+          single-line
+          variant="solo"
+          density="compact"
+          class="px-2"
+        ></v-text-field>
+        <v-text-field
           label="Endereço"
           placeholder="Endereço do usuário"
-          prepend-icon="mdi-map-marker-outline"
+          prepend-inner-icon="mdi-map-marker-outline"
+          v-model="user.endereco"
           :rules="addressRules"
-          :hide-details="false"
-        />
-        <TextFieldComponent
-          v-model="user.cidade"
+          single-line
+          variant="solo"
+          density="compact"
+          class="px-2"
+        ></v-text-field>
+        <v-text-field
           label="Cidade"
           placeholder="Cidade do usuário"
-          prepend-icon="mdi-map-marker-outline"
+          prepend-inner-icon="mdi-map-marker-outline"
+          v-model="user.cidade"
           :rules="cityRules"
-          :hide-details="false"
-        />
+          single-line
+          variant="solo"
+          density="compact"
+          class="px-2"
+        ></v-text-field>
         <div class="d-flex py-4 px-2 justify-end aling-left">
           <ButtonComponent
             title="Salvar"
@@ -61,7 +79,6 @@
 
 <script lang="ts" setup>
 import ButtonComponent from '@/components/ButtonComponent.vue';
-import TextFieldComponent from '@/components/TextFieldComponent.vue';
 import { UsersService } from '@/services/users';
 import { User } from '@/interfaces/user.interface';
 import { watch, ref } from 'vue';
@@ -89,10 +106,10 @@ const props = defineProps({
 
 const user = ref<User>({
   id: 0,
-  nome: 'adad',
-  endereco: 'asdasd',
-  cidade: 'asd',
-  email: 'asd',
+  nome: '',
+  endereco: '',
+  cidade: '',
+  email: '',
 });
 const isFormValid = ref<boolean>(false);
 const isLoading = ref<boolean>(false);
