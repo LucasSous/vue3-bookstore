@@ -7,7 +7,7 @@
       :loading="props.isLoading"
       :fixed-header="true"
       height="60vh"
-      items-per-page-text="Items por página"
+      items-per-page-text="Itens por página"
       items-per-page="10"
       loading-text="Carregando dados..."
     >
@@ -19,6 +19,7 @@
     <UsersFormDialog
       :is-open-dialog="isOpenDialog"
       @close="closeDialog"
+      @updateList="updateList"
       :user-id="userId"
     />
   </div>
@@ -50,6 +51,8 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits();
+
 const userId = ref<string>('');
 
 const isOpenDialog = ref<boolean>(false);
@@ -62,5 +65,9 @@ const openDialog = (id: number): void => {
 const closeDialog = (): void => {
   isOpenDialog.value = false;
   userId.value = '';
+};
+
+const updateList = (): void => {
+  emit('updateList');
 };
 </script>

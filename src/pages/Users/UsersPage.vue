@@ -22,8 +22,13 @@
     :users="usersList"
     :search="search"
     :loading="isLoading"
+    @updateList="getUsers"
   />
-  <UsersFormDialog :is-open-dialog="isOpenDialog" @close="closeDialog" />
+  <UsersFormDialog
+    :is-open-dialog="isOpenDialog"
+    @close="closeDialog"
+    @updateList="getUsers"
+  />
 </template>
 
 <script lang="ts" setup>

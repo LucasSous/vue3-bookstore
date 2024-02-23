@@ -3,7 +3,7 @@
     <v-card color="grey-lighten-4" class="pa-4">
       <v-row class="pb-4 pl-2">
         <v-col>
-          <div class="text-h5">Novo Usuário</div>
+          <div class="text-h5">{{ dialogTitle() }}</div>
         </v-col>
         <v-col cols="1">
           <v-icon icon="mdi-close" size="20" @click="closeDialog"> </v-icon>
@@ -70,6 +70,7 @@
             title="Salvar"
             type="submit"
             :disabled="!isFormValid"
+            :loading="isButtonLoading"
           />
         </div>
       </v-form>
@@ -82,6 +83,7 @@ import ButtonComponent from '@/components/ButtonComponent.vue';
 import { UsersService } from '@/services/users';
 import { User } from '@/interfaces/user.interface';
 import { watch, ref } from 'vue';
+import { useSnackbar } from 'vue3-snackbar';
 import {
   invalidEmail,
   invalidValue,
@@ -104,6 +106,8 @@ const props = defineProps({
   },
 });
 
+const snackbar = useSnackbar();
+
 const user = ref<User>({
   id: 0,
   nome: '',
@@ -113,6 +117,7 @@ const user = ref<User>({
 });
 const isFormValid = ref<boolean>(false);
 const isLoading = ref<boolean>(false);
+const isButtonLoading = ref<boolean>(false);
 
 const nameRules = [
   requiredValue,
@@ -141,6 +146,10 @@ const cityRules = [
   (value: string) => minCharacters(value, 3),
 ];
 
+const dialogTitle = (): string => {
+  return props.userId ? 'Editar Usuário' : 'Novo Usuário';
+};
+
 const closeDialog = (): void => {
   emit('close');
   resetUserValue();
@@ -156,14 +165,18 @@ const resetUserValue = (): void => {
   };
 };
 
-const formSubmit = (): void => {
+const formSubmit = async (): Promise<void> => {
   if (isFormValid.value) {
     if (props.userId) {
-      console.log('editar');
+      await updateUser(user.value);
     } else {
-      console.log('salvar');
+      await createUser(user.value);
     }
   }
+};
+
+const updateList = (): void => {
+  emit('updateList');
 };
 
 const getUserById = async (userId: string): Promise<void> => {
@@ -175,6 +188,46 @@ const getUserById = async (userId: string): Promise<void> => {
     console.log(err);
   } finally {
     isLoading.value = false;
+  }
+};
+
+const createUser = async (newUser: User): Promise<void> => {
+  try {
+    isButtonLoading.value = true;
+    await UsersService.create(newUser);
+    closeDialog();
+    updateList();
+    snackbar.add({
+      type: 'success',
+      text: `Usuário ${newUser.nome} adicionado`,
+    });
+  } catch (error) {
+    snackbar.add({
+      type: 'error',
+      text: 'Erro ao tentar adicionar usuário',
+    });
+  } finally {
+    isButtonLoading.value = false;
+  }
+};
+
+const updateUser = async (newUser: User): Promise<void> => {
+  try {
+    isButtonLoading.value = true;
+    await UsersService.update(newUser);
+    closeDialog();
+    updateList();
+    snackbar.add({
+      type: 'success',
+      text: `Usuário editado com sucesso`,
+    });
+  } catch (error) {
+    snackbar.add({
+      type: 'error',
+      text: 'Erro ao tentar editar usuário',
+    });
+  } finally {
+    isButtonLoading.value = false;
   }
 };
 
