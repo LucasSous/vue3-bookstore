@@ -204,7 +204,7 @@ const createUser = async (newUser: User): Promise<void> => {
   } catch (error) {
     snackbar.add({
       type: 'error',
-      text: 'Erro ao tentar adicionar usuário',
+      text: error,
     });
   } finally {
     isButtonLoading.value = false;
@@ -224,7 +224,7 @@ const updateUser = async (newUser: User): Promise<void> => {
   } catch (error) {
     snackbar.add({
       type: 'error',
-      text: 'Erro ao tentar editar usuário',
+      text: error,
     });
   } finally {
     isButtonLoading.value = false;

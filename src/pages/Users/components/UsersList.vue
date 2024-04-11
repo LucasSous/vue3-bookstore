@@ -13,7 +13,7 @@
     >
       <template v-slot:item.actions="{ item }">
         <v-icon class="me-2" @click="openDialog(item.id)"> mdi-pencil </v-icon>
-        <v-icon> mdi-delete </v-icon>
+        <v-icon @click="changeIsOpenConfirmDialog(item)"> mdi-delete </v-icon>
       </template>
     </v-data-table>
     <UsersFormDialog
@@ -21,6 +21,14 @@
       @close="closeDialog"
       @updateList="updateList"
       :user-id="userId"
+    />
+    <ConfirmDialogComponent
+      :is-open-dialog="isOpenConfirmDialog"
+      @deleteConfirm="deleteUser"
+      @close="changeIsOpenConfirmDialog"
+      :is-loading-button="isLoadingDeleteButton"
+      dialog-title="Deletar usuário"
+      :dialog-message="`O usuário ${user?.nome} será deletado da base de dados. Deseja realmente deletar?`"
     />
   </div>
 </template>
@@ -30,6 +38,10 @@ import UsersFormDialog from './UsersFormDialog.vue';
 import { VDataTable } from 'vuetify/lib/components/index.mjs';
 import { User } from '@/interfaces/user.interface';
 import { ref } from 'vue';
+import ConfirmDialogComponent from '@/components/ConfirmDialogComponent.vue';
+import { UsersService } from '@/services/users';
+import { useSnackbar } from 'vue3-snackbar';
+
 type ReadonlyHeaders = InstanceType<typeof VDataTable>['headers'];
 
 const props = defineProps({
@@ -55,7 +67,15 @@ const emit = defineEmits();
 
 const userId = ref<string>('');
 
+const user = ref<User>();
+
 const isOpenDialog = ref<boolean>(false);
+
+const isOpenConfirmDialog = ref<boolean>(false);
+
+const isLoadingDeleteButton = ref<boolean>(false);
+
+const snackbar = useSnackbar();
 
 const openDialog = (id: number): void => {
   userId.value = id.toString();
@@ -67,7 +87,34 @@ const closeDialog = (): void => {
   userId.value = '';
 };
 
+const changeIsOpenConfirmDialog = (selectedUser?: User): void => {
+  isOpenConfirmDialog.value = !isOpenConfirmDialog.value;
+  user.value = selectedUser;
+};
+
 const updateList = (): void => {
   emit('updateList');
+};
+
+const deleteUser = async (): Promise<void> => {
+  try {
+    isLoadingDeleteButton.value = true;
+    if (user.value != null) {
+      await UsersService.delete(user.value);
+      changeIsOpenConfirmDialog();
+      updateList();
+      snackbar.add({
+        type: 'success',
+        text: `Usuário deletado com sucesso`,
+      });
+    }
+  } catch (error) {
+    snackbar.add({
+      type: 'error',
+      text: error,
+    });
+  } finally {
+    isLoadingDeleteButton.value = false;
+  }
 };
 </script>

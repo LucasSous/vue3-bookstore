@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ButtonComponent: typeof import('./src/components/ButtonComponent.vue')['default']
+    ConfirmDialogComponent: typeof import('./src/components/ConfirmDialogComponent.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TextField: typeof import('./src/components/TextField.vue')['default']
