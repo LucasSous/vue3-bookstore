@@ -9,6 +9,7 @@
       height="60vh"
       items-per-page-text="Itens por página"
       items-per-page="10"
+      :items-per-page-options="itemsPerPageOptions"
       loading-text="Carregando dados..."
     >
       <template v-slot:item.actions="{ item }">
@@ -75,6 +76,14 @@ const isOpenConfirmDialog = ref<boolean>(false);
 
 const isLoadingDeleteButton = ref<boolean>(false);
 
+const itemsPerPageOptions = <(number | { title: string; value: number })[]>[
+  { value: 10, title: '10' },
+  { value: 25, title: '25' },
+  { value: 50, title: '50' },
+  { value: 100, title: '100' },
+  { value: -1, title: 'Tudo' },
+];
+
 const snackbar = useSnackbar();
 
 const openDialog = (id: number): void => {
@@ -89,7 +98,7 @@ const closeDialog = (): void => {
 
 const changeIsOpenConfirmDialog = (selectedUser?: User): void => {
   isOpenConfirmDialog.value = !isOpenConfirmDialog.value;
-  user.value = selectedUser;
+  if (selectedUser) user.value = selectedUser;
 };
 
 const updateList = (): void => {
