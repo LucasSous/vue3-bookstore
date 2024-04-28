@@ -2,7 +2,7 @@
   <div>
     <v-data-table
       :headers="props.headers"
-      :items="props.users"
+      :items="props.publishers"
       :search="props.search"
       :loading="props.isLoading"
       :fixed-header="true"
@@ -11,38 +11,38 @@
       items-per-page="10"
       :items-per-page-options="itemsPerPageOptions"
       loading-text="Carregando dados..."
-      no-data-text="Nenhum usuário encontrado"
+      no-data-text="Nenhuma editora encontrada"
     >
       <template v-slot:item.actions="{ item }">
         <v-icon class="me-2" @click="openDialog(item.id)"> mdi-pencil </v-icon>
         <v-icon @click="changeIsOpenConfirmDialog(item)"> mdi-delete </v-icon>
       </template>
     </v-data-table>
-    <UsersFormDialog
+    <PublishersFormDialog
       :is-open-dialog="isOpenDialog"
       @close="closeDialog"
       @updateList="updateList"
-      :user-id="userId"
+      :publisher-id="publisherId"
     />
     <ConfirmDialogComponent
       :is-open-dialog="isOpenConfirmDialog"
-      @deleteConfirm="deleteUser"
+      @deleteConfirm="deletePublisher"
       @close="changeIsOpenConfirmDialog"
       :is-loading-button="isLoadingDeleteButton"
-      dialog-title="Deletar usuário"
-      :dialog-message="`O usuário ${user?.nome} será deletado da base de dados. Deseja realmente deletar?`"
+      dialog-title="Deletar editora"
+      :dialog-message="`A editora ${publisher?.nome} será deletada da base de dados. Deseja realmente deletar?`"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import UsersFormDialog from './UsersFormDialog.vue';
+import PublishersFormDialog from './PublishersFormDialog.vue';
 import { VDataTable } from 'vuetify/lib/components/index.mjs';
-import { User } from '@/interfaces/user.interface';
 import { ref } from 'vue';
 import ConfirmDialogComponent from '@/components/ConfirmDialogComponent.vue';
-import { UsersService } from '@/services/users';
+import { PublishersService } from '@/services/publishers';
 import { useSnackbar } from 'vue3-snackbar';
+import { Publisher } from '@/interfaces/publisher.interface';
 
 type ReadonlyHeaders = InstanceType<typeof VDataTable>['headers'];
 
@@ -51,8 +51,8 @@ const props = defineProps({
     type: Array as () => ReadonlyHeaders,
     default: () => [],
   },
-  users: {
-    type: Array as () => User[],
+  publishers: {
+    type: Array as () => Publisher[],
     default: () => [],
   },
   search: {
@@ -67,9 +67,9 @@ const props = defineProps({
 
 const emit = defineEmits();
 
-const userId = ref<string>('');
+const publisherId = ref<string>('');
 
-const user = ref<User>();
+const publisher = ref<Publisher>();
 
 const isOpenDialog = ref<boolean>(false);
 
@@ -88,34 +88,34 @@ const itemsPerPageOptions = <(number | { title: string; value: number })[]>[
 const snackbar = useSnackbar();
 
 const openDialog = (id: number): void => {
-  userId.value = id.toString();
+  publisherId.value = id.toString();
   isOpenDialog.value = true;
 };
 
 const closeDialog = (): void => {
   isOpenDialog.value = false;
-  userId.value = '';
+  publisherId.value = '';
 };
 
-const changeIsOpenConfirmDialog = (selectedUser?: User): void => {
+const changeIsOpenConfirmDialog = (selectedPublisher?: Publisher): void => {
   isOpenConfirmDialog.value = !isOpenConfirmDialog.value;
-  if (selectedUser) user.value = selectedUser;
+  if (selectedPublisher) publisher.value = selectedPublisher;
 };
 
 const updateList = (): void => {
   emit('updateList');
 };
 
-const deleteUser = async (): Promise<void> => {
+const deletePublisher = async (): Promise<void> => {
   try {
     isLoadingDeleteButton.value = true;
-    if (user.value != null) {
-      await UsersService.delete(user.value);
+    if (publisher.value != null) {
+      await PublishersService.delete(publisher.value);
       changeIsOpenConfirmDialog();
       updateList();
       snackbar.add({
         type: 'success',
-        text: `Usuário deletado com sucesso`,
+        text: `Editora deletada com sucesso`,
       });
     }
   } catch (error) {
