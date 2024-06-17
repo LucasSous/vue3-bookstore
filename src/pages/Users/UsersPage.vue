@@ -1,5 +1,4 @@
 <template>
-  <TitleComponent title="Usuários" />
   <v-row justify="end">
     <v-col cols="12" sm="10" md="8" lg="6">
       <v-container class="d-flex justify-end align-center px-0">
@@ -33,7 +32,6 @@
 
 <script lang="ts" setup>
 import ButtonComponent from '@/components/ButtonComponent.vue';
-import TitleComponent from '@/components/TitleComponent.vue';
 import TextFieldComponent from '@/components/TextFieldComponent.vue';
 import UsersList from './components/UsersList.vue';
 import { UsersService } from '@/services/users';

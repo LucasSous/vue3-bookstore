@@ -1,9 +1,5 @@
-<template>
-  <TitleComponent title="Dashboard" />
-</template>
+<template></template>
 
 <script lang="ts" setup>
-import TitleComponent from '@/components/TitleComponent.vue';
-
 //
 </script>

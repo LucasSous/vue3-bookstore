@@ -1,5 +1,4 @@
 <template>
-  <TitleComponent title="Editoras" />
   <v-row justify="end">
     <v-col cols="12" sm="10" md="8" lg="6">
       <v-container class="d-flex justify-end align-center px-0">
@@ -34,7 +33,6 @@
 <script lang="ts" setup>
 import ButtonComponent from '@/components/ButtonComponent.vue';
 import TextFieldComponent from '@/components/TextFieldComponent.vue';
-import TitleComponent from '@/components/TitleComponent.vue';
 import PublishersList from './components/PublishersList.vue';
 import PublishersFormDialog from './components/PublishersFormDialog.vue';
 import { onMounted, ref } from 'vue';
