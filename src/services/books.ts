@@ -1,11 +1,11 @@
-import { Publisher } from '@/interfaces/publisher.interface';
+import { Book } from '@/interfaces/book.interface';
 import api from './api';
 import { formatException } from './utils/FormatException';
 
-const PublishersService = {
-  async get(): Promise<Publisher[]> {
+const BooksService = {
+  async get(): Promise<Book[]> {
     try {
-      const response = await api.get<Publisher[]>('/editoras');
+      const response = await api.get<Book[]>('/livros');
       return response.data;
     } catch (error) {
       const responseError = formatException(error) as string;
@@ -13,9 +13,9 @@ const PublishersService = {
     }
   },
 
-  async getById(id: string): Promise<Publisher> {
+  async getById(id: string): Promise<Book> {
     try {
-      const response = await api.get<Publisher>(`/editora/${id}`);
+      const response = await api.get<Book>(`/livro/${id}`);
       return response.data;
     } catch (error) {
       const responseError = formatException(error) as string;
@@ -23,27 +23,27 @@ const PublishersService = {
     }
   },
 
-  async create(publisher: Publisher): Promise<void> {
+  async create(book: Book): Promise<void> {
     try {
-      await api.post<Publisher>('/editora', publisher);
+      await api.post<Book>('/livro', book);
     } catch (error) {
       const responseError = formatException(error) as string;
       throw new Error(responseError);
     }
   },
 
-  async update(publisher: Publisher): Promise<void> {
+  async update(book: Book): Promise<void> {
     try {
-      await api.put<Publisher>('/editora', publisher);
+      await api.put<Book>('/livro', book);
     } catch (error) {
       const responseError = formatException(error) as string;
       throw new Error(responseError);
     }
   },
 
-  async delete(publisher: Publisher): Promise<void> {
+  async delete(book: Book): Promise<void> {
     try {
-      await api.delete<Publisher>('/editora', { data: publisher });
+      await api.delete<Book>('/livro', { data: book });
     } catch (error) {
       const responseError = formatException(error) as string;
       throw new Error(responseError);
@@ -51,4 +51,4 @@ const PublishersService = {
   },
 };
 
-export { PublishersService };
+export { BooksService };

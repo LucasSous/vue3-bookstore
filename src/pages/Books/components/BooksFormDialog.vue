@@ -23,47 +23,64 @@
       >
         <v-text-field
           label="Nome"
-          placeholder="Nome do usuário"
+          placeholder="Nome do livro"
           prepend-inner-icon="mdi-account-outline"
-          v-model="user.nome"
-          :rules="UserInputValidators.validateName()"
+          v-model="book.nome"
+          :rules="BookInputValidators.validateName()"
           single-line
           variant="solo"
           density="compact"
           class="px-2"
         ></v-text-field>
         <v-text-field
-          label="E-mail"
-          placeholder="Ex:. usuario@gmail.com"
-          prepend-inner-icon="mdi-email-outline"
-          v-model="user.email"
-          :rules="UserInputValidators.validateEmail()"
+          label="Autor"
+          placeholder="Nome do autor"
+          prepend-inner-icon="mdi-head-lightbulb-outline"
+          v-model="book.autor"
+          :rules="BookInputValidators.validateAutor()"
           single-line
           variant="solo"
           density="compact"
           class="px-2"
         ></v-text-field>
+        <v-select
+          label="Editora"
+          clearable
+          placeholder="Selecione uma editora"
+          prepend-inner-icon="mdi-bookmark-outline"
+          v-model="book.editora"
+          :rules="BookInputValidators.validatePublisher()"
+          :items="publisherList"
+          :item-props="itemProps"
+          density="compact"
+          single-line
+          variant="solo"
+          class="px-2"
+          :loading="isLoadingPublishers"
+        ></v-select>
         <v-text-field
-          label="Endereço"
-          placeholder="Endereço do usuário"
-          prepend-inner-icon="mdi-map-marker-outline"
-          v-model="user.endereco"
-          :rules="UserInputValidators.validateAdress()"
+          label="Ano de lançamento"
+          placeholder="Ex: 2000"
+          prepend-inner-icon="mdi-calendar"
+          v-model="book.lancamento"
+          :rules="BookInputValidators.validateLaunchYear()"
           single-line
           variant="solo"
           density="compact"
           class="px-2"
+          type="number"
         ></v-text-field>
         <v-text-field
-          label="Cidade"
-          placeholder="Cidade do usuário"
-          prepend-inner-icon="mdi-map-marker-outline"
-          v-model="user.cidade"
-          :rules="UserInputValidators.validateCity()"
+          label="Quantidade"
+          placeholder="Ex: 99"
+          prepend-inner-icon="mdi-numeric"
+          v-model="book.quantidade"
+          :rules="BookInputValidators.validateQuantity()"
           single-line
           variant="solo"
           density="compact"
           class="px-2"
+          type="number"
         ></v-text-field>
         <div class="d-flex py-4 px-2 justify-end aling-left">
           <ButtonComponent
@@ -80,11 +97,13 @@
 
 <script lang="ts" setup>
 import ButtonComponent from '@/components/ButtonComponent.vue';
-import { UsersService } from '@/services/users';
-import { User } from '@/interfaces/user.interface';
-import { watch, ref } from 'vue';
+import { BooksService } from '@/services/books';
+import { PublishersService } from '@/services/publishers';
+import { Book } from '@/interfaces/book.interface';
+import { Publisher } from '@/interfaces/publisher.interface';
+import { watch, ref, onMounted } from 'vue';
 import { useSnackbar } from 'vue3-snackbar';
-import UserInputValidators from '@/shared/validators/UserInputValidators';
+import BookInputValidators from '@/shared/validators/BookInputValidators';
 
 const emit = defineEmits();
 const props = defineProps({
@@ -92,7 +111,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  userId: {
+  bookId: {
     type: String,
     default: null,
   },
@@ -100,30 +119,34 @@ const props = defineProps({
 
 const snackbar = useSnackbar();
 
-const user = ref<User>(<User>{});
+const book = ref<Book>(<Book>{});
+
+const publisherList = ref<Publisher[]>([]);
+
 const isFormValid = ref<boolean>(false);
 const isLoading = ref<boolean>(false);
+const isLoadingPublishers = ref<boolean>(false);
 const isButtonLoading = ref<boolean>(false);
 
 const dialogTitle = (): string => {
-  return props.userId ? 'Editar Usuário' : 'Novo Usuário';
+  return props.bookId ? 'Editar Livro' : 'Novo Livro';
 };
 
 const closeDialog = (): void => {
   emit('close');
-  resetUserValue();
+  resetBookValue();
 };
 
-const resetUserValue = (): void => {
-  user.value = <User>{};
+const resetBookValue = (): void => {
+  book.value = <Book>{};
 };
 
 const formSubmit = async (): Promise<void> => {
   if (isFormValid.value) {
-    if (props.userId) {
-      await updateUser(user.value);
+    if (props.bookId) {
+      await updateBook(book.value);
     } else {
-      await createUser(user.value);
+      await createBook(book.value);
     }
   }
 };
@@ -132,11 +155,11 @@ const updateList = (): void => {
   emit('updateList');
 };
 
-const getUserById = async (userId: string): Promise<void> => {
+const getBookById = async (bookId: string): Promise<void> => {
   try {
     isLoading.value = true;
-    const response = await UsersService.getById(userId);
-    user.value = response;
+    const response = await BooksService.getById(bookId);
+    book.value = response;
   } catch (err: any | Error) {
     console.log(err);
   } finally {
@@ -144,15 +167,15 @@ const getUserById = async (userId: string): Promise<void> => {
   }
 };
 
-const createUser = async (newUser: User): Promise<void> => {
+const createBook = async (newBook: Book): Promise<void> => {
   try {
     isButtonLoading.value = true;
-    await UsersService.create(newUser);
+    await BooksService.create(newBook);
     closeDialog();
     updateList();
     snackbar.add({
       type: 'success',
-      text: `Usuário ${newUser.nome} adicionado`,
+      text: `Livro ${newBook.nome} adicionado`,
     });
   } catch (error) {
     snackbar.add({
@@ -164,15 +187,15 @@ const createUser = async (newUser: User): Promise<void> => {
   }
 };
 
-const updateUser = async (newUser: User): Promise<void> => {
+const updateBook = async (newBook: Book): Promise<void> => {
   try {
     isButtonLoading.value = true;
-    await UsersService.update(newUser);
+    await BooksService.update(newBook);
     closeDialog();
     updateList();
     snackbar.add({
       type: 'success',
-      text: `Usuário editado com sucesso`,
+      text: `Livro editado com sucesso`,
     });
   } catch (error) {
     snackbar.add({
@@ -183,11 +206,35 @@ const updateUser = async (newUser: User): Promise<void> => {
     isButtonLoading.value = false;
   }
 };
+
+const getPublishers = async (): Promise<void> => {
+  try {
+    isLoadingPublishers.value = true;
+    const response = await PublishersService.get();
+    publisherList.value = response;
+  } catch (err: any | Error) {
+    snackbar.add({
+      type: 'error',
+      text: err,
+    });
+  } finally {
+    isLoadingPublishers.value = false;
+  }
+};
+
+const itemProps = (item: Publisher) => {
+  return {
+    title: item.nome,
+    value: item,
+  };
+};
+
+onMounted(getPublishers);
 
 watch(props, async (newProps) => {
   if (newProps.isOpenDialog) {
-    if (newProps.userId) {
-      await getUserById(newProps.userId);
+    if (newProps.bookId) {
+      await getBookById(newProps.bookId);
     }
   }
 });

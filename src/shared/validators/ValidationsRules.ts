@@ -33,6 +33,16 @@ const spacesAtTheStart = (value: string) => {
   return 'Valor não deve conter espaços no início';
 };
 
+const onlyNumbers = (value: string) => {
+  if (/[0-9]+$/.test(value)) return true;
+  return 'Valor deve ser apenas um número';
+};
+
+const largerThanZero = (value: string) => {
+  if (parseInt(value) > 0) return true;
+  return 'Valor deve ser maior que zero';
+};
+
 export {
   invalidEmail,
   invalidValue,
@@ -41,4 +51,6 @@ export {
   minCharacters,
   requiredValue,
   spacesAtTheStart,
+  onlyNumbers,
+  largerThanZero,
 };

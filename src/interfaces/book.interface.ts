@@ -6,6 +6,6 @@ export interface Book {
   autor: string;
   quantidade: number;
   lancamento: number;
-  totalAlugado: number;
+  totalalugado: number;
   editora: Publisher;
 }

@@ -12,10 +12,9 @@
         </v-container>
         <v-list nav v-for="item in menuBuilder" :key="item.title">
           <v-list-item
-            :to="item.link"
+            :to="item.path"
             :prepend-icon="item.icon"
             :title="item.title"
-            @click="changeActivePageTitle(item.title)"
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>
@@ -25,7 +24,7 @@
             <v-icon @click.stop="changeDrawer" size="30" class="mr-4">{{
               getMenuIcon()
             }}</v-icon>
-            <TitleComponent :title="activePageTitle" />
+            <TitleComponent :title="getPageTitle()" />
           </v-row>
           <router-view />
         </v-container>
@@ -36,46 +35,47 @@
 
 <script lang="ts" setup>
 import TitleComponent from '@/components/TitleComponent.vue';
-import { useResponsive } from '@/utils/useResponsive';
+import { useResponsive } from '@/shared/utils/useResponsive';
 import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 interface SideMenuProps {
   title: string;
   icon?: string;
-  link?: string;
+  path?: string;
 }
+
+const route = useRoute();
 
 const isPermanentDrawer = useResponsive('(min-width: 1024px)');
 
 const drawer = ref<boolean>();
 
-const activePageTitle = ref<string>('Dashboard');
-
 const menuBuilder: SideMenuProps[] = [
   {
     title: 'Dashboard',
     icon: 'mdi-view-dashboard-outline',
-    link: '/',
+    path: '/',
   },
   {
     title: 'Usuários',
     icon: 'mdi-account-multiple-outline',
-    link: '/users',
+    path: '/users',
   },
   {
     title: 'Livros',
     icon: 'mdi-bookshelf',
-    link: '/books',
+    path: '/books',
   },
   {
     title: 'Editoras',
     icon: 'mdi-bookmark-outline',
-    link: '/publishers',
+    path: '/publishers',
   },
   {
     title: 'Alugúeis',
     icon: 'mdi-calendar-multiple',
-    link: '/rents',
+    path: '/rents',
   },
 ];
 
@@ -83,8 +83,15 @@ const changeDrawer = (): void => {
   drawer.value = !drawer.value;
 };
 
-const changeActivePageTitle = (value: string): void => {
-  activePageTitle.value = value;
+const getPageTitle = (): string => {
+  let path = route.path;
+  let title = '';
+  menuBuilder.forEach((element) => {
+    if (path === element.path) {
+      title = element.title;
+    }
+  });
+  return title;
 };
 
 const getMenuIcon = (): String => (drawer.value ? 'mdi-menu-open' : 'mdi-menu');

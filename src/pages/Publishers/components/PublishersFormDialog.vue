@@ -26,7 +26,7 @@
           placeholder="Nome da editora"
           prepend-inner-icon="mdi-account-outline"
           v-model="publisher.nome"
-          :rules="nameRules"
+          :rules="PublisherInputValidators.validateName()"
           single-line
           variant="solo"
           density="compact"
@@ -37,7 +37,7 @@
           placeholder="Cidade da editora"
           prepend-inner-icon="mdi-map-marker-outline"
           v-model="publisher.cidade"
-          :rules="cityRules"
+          :rules="PublisherInputValidators.validateCity()"
           single-line
           variant="solo"
           density="compact"
@@ -62,14 +62,7 @@ import { PublishersService } from '@/services/publishers';
 import { Publisher } from '@/interfaces/publisher.interface';
 import { watch, ref } from 'vue';
 import { useSnackbar } from 'vue3-snackbar';
-import {
-  invalidValue,
-  invalidValueWithSpaces,
-  maxCharacters,
-  minCharacters,
-  requiredValue,
-  spacesAtTheStart,
-} from '@/utils/ValidationsRules';
+import PublisherInputValidators from '@/shared/validators/PublisherInputValidators';
 
 const emit = defineEmits();
 const props = defineProps({
@@ -85,32 +78,10 @@ const props = defineProps({
 
 const snackbar = useSnackbar();
 
-const publisher = ref<Publisher>({
-  id: 0,
-  nome: '',
-  cidade: '',
-});
+const publisher = ref<Publisher>(<Publisher>{});
 const isFormValid = ref<boolean>(false);
 const isLoading = ref<boolean>(false);
 const isButtonLoading = ref<boolean>(false);
-
-const nameRules = [
-  requiredValue,
-  invalidValue,
-  invalidValueWithSpaces,
-  spacesAtTheStart,
-  (value: string) => maxCharacters(value, 30),
-  (value: string) => minCharacters(value, 3),
-];
-
-const cityRules = [
-  requiredValue,
-  invalidValue,
-  invalidValueWithSpaces,
-  spacesAtTheStart,
-  (value: string) => maxCharacters(value, 20),
-  (value: string) => minCharacters(value, 3),
-];
 
 const dialogTitle = (): string => {
   return props.publisherId ? 'Editar Editora' : 'Nova Editora';
@@ -122,11 +93,7 @@ const closeDialog = (): void => {
 };
 
 const resetPublisherValue = (): void => {
-  publisher.value = {
-    id: 0,
-    nome: '',
-    cidade: '',
-  };
+  publisher.value = <Publisher>{};
 };
 
 const formSubmit = async (): Promise<void> => {
